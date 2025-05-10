@@ -46,6 +46,7 @@ class AuthController extends Controller
             'username' => $field['username'],
             'phone' => $field['phone'] ?? null,
             'url_photo' => $urlPhoto,
+
         ]);
         //   $token = $user->createToken($request->name);
 
@@ -55,7 +56,7 @@ class AuthController extends Controller
                     "id" => $user->id,
                     "name" => $user->name,
                     "email" => $user->email,
-                    //  "token" => $token->plainTextToken,
+
                     'url_photo' => url($urlPhoto) ?? null,
                 ],
 
