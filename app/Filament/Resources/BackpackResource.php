@@ -12,30 +12,35 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Fieldset;
 
 class BackpackResource extends Resource
 {
     protected static ?string $model = Backpack::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'bi-backpack2-fill';
+    protected static ?string $navigationGroup = 'General';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('trip_id')
+                    Forms\Components\Select::make('trip_id')
                     ->relationship('trip', 'name')
                     ->required(),
                 Forms\Components\TextInput::make('color_id')
                     ->required()
                     ->numeric()
                     ->default(1),
-                Forms\Components\TextInput::make('name')
+                    Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('description')
                     ->maxLength(255),
-            ]);
+                ])->columns(2);
+                
+                
+                
     }
 
     public static function table(Table $table): Table
@@ -64,8 +69,10 @@ class BackpackResource extends Resource
             ->filters([
                 //
             ])
+            ->striped()
             ->actions([
-                Tables\Actions\EditAction::make(),
+                 Tables\Actions\EditAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -77,7 +84,7 @@ class BackpackResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CategoriesRelationManager::class,
         ];
     }
 

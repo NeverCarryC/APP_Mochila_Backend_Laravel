@@ -6,11 +6,37 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PasswordResetMail;
+use App\Mail\RegisterVerificarMail;
 use App\Models\User;
 
 
 class PasswordResetController extends Controller
 {
+
+
+
+    public function sendVertifyCode(Request $request)
+    {
+
+
+        // 1️⃣ Verificar el formato y la existencia del buzón
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        // 2️⃣ Generar código aleatorio de 5 dígitos
+        $code = str_pad(random_int(0, 99999), 5, '0', STR_PAD_LEFT);
+
+        // 3️⃣ Almacenado en caché (5 minutos)
+        Cache::put('password_reset_' . $request->email, $code, now()->addMinutes(5));
+
+        // 4️⃣ enviar el corrro
+        Mail::to($request->email)->send(new RegisterVerificarMail($code));
+
+
+        return response()->json(['message' => 'Código enviado al correo.'], 200);
+    }
+
     public function sendResetCode(Request $request)
     {
         // 1️⃣ Verificar el formato y la existencia del buzón
@@ -31,6 +57,38 @@ class PasswordResetController extends Controller
         return response()->json(['message' => 'Código enviado al correo.'], 200);
     }
 
+
+    public function verifyRegisterCode(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required|string'
+        ]);
+
+        // 2️⃣ Obtener código en la caché
+        $cachedCode = Cache::get('password_reset_' . $request->email);
+
+        // 3️⃣ Verificar código
+        if (!$cachedCode || $cachedCode !== $request->code) {
+            return response()->json(['message' => 'Código incorrecto o expirado'], 400);
+        }
+
+        // return response()->json(
+        //     [
+        //         'data' => [
+        //             "id" => $user->id,
+        //             "name" => $user->name,
+        //             "email" => $user->email,
+        //             "token" => $token->plainTextToken,
+        //         ],
+        //         'message' => "login con éxito",
+        //     ]
+        // );
+        return response()->json(['data' => 'Código verificado correctamente'], 200);
+    }
+
+
+    // para vertify the reset password code
     public function verifyCode(Request $request)
     {
 

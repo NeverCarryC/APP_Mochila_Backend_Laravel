@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
-            // Maybe we should write:
-            //  $table->foreignId('user_id')->constrained()->cascadeOnDelete()
-            // Which means then a user is deleted, their trips are also deleted
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('destination');
+            $table->string('temperature'); 
             $table->date('start_date');
-            $table->date('end_date');
+            $table->date('end_date')->nullable();
             $table->string('url_photo')->nullable();
             $table->timestamps();
         });

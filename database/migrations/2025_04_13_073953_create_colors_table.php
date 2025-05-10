@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trip_categories', function (Blueprint $table) {
+        Schema::create('colors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('trip_id');
-            $table->string('name');
-            $table->string('description')->nullable();
             $table->timestamps();
+            $table->string('name');
+            $table->string('hexa', 7);  // etc: '#FFFFFF'
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trip_categories');
+        Schema::dropIfExists('colors');
     }
 };

@@ -23,6 +23,27 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Trip::class);
     }
+
+    public function tripCategories(): HasMany
+    {
+        return $this->hasMany(TripCategory::class);
+    }
+
+    public function backpacks(): HasMany
+    {
+        return $this->hasMany(Backpack::class);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class);
+    }
+
+    public function itemCategories(): HasMany
+    {
+        return $this->hasMany(ItemCategory::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -63,7 +84,7 @@ class User extends Authenticatable implements FilamentUser
     // Este método permite personalizar el control de acceso a Filament según tus necesidades.
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return $this->hasAnyRole('super_admin');
         // return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
     }
 }

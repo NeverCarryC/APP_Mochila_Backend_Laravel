@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('backpacks', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('trip_id');
-            $table->foreignId('color_id')->default(1);
+            $table->unsignedBigInteger('item_category_id')->default(1);
+            $table->foreign('item_category_id')->references('id')->on('item_categories')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
+            $table->integer('quantity')->default(1); 
+            $table->boolean('is_checked')->default(false);
             $table->string('description')->nullable();
             $table->timestamps();
         });
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('backpacks');
+        Schema::dropIfExists('items');
     }
 };

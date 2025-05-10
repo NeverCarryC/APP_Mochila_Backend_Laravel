@@ -14,9 +14,12 @@ class Trip extends Model
 {
     protected $fillable = [
         'url_photo',
+        'trip_id',
         'start_date',
+        'user_id',
         'destination',
         'description',
+        'temperature',
         'name',
         'end_date',
     ];
@@ -48,12 +51,14 @@ class Trip extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function backpacks(): HasMany
     {
         return $this->hasMany(Backpack::class);
     }
-    public function trip_categories(): BelongsToMany
+
+    public function categories()
     {
-        return $this->belongsToMany(Trip_categories::class);
+        return $this->belongsToMany(TripCategory::class, 'trip_trip_category');
     }
 }
