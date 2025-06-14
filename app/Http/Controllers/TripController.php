@@ -99,6 +99,7 @@ class TripController extends Controller implements HasMiddleware
 
             $backpack = $trip->backpacks()->create([
                 'name' => $trip->name,
+                'url_photo' => $trip->url_photo,
             ]);
 
             if ($template) {

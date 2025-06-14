@@ -50,6 +50,7 @@ class ItemController extends Controller implements HasMiddleware
                                     'name' => $item->name,
                                     'description' => $item->description,
                                     'quantity' => $item->quantity,
+                                    'is_checked' => $item->is_checked,
                                 ];
                             }),
                         ];

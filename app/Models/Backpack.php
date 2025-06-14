@@ -17,6 +17,7 @@ class Backpack extends Model
         'color_id',
         'name',
         'description',
+        'url_photo',
     ];
 
     public static function boot()

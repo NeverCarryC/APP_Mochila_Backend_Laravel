@@ -22,7 +22,7 @@ class AuthController extends Controller
             'phone' => 'string|nullable',
             'url_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096'
         ]);
-
+        $urlPhoto = null;
         $image = null;
         if ($request->hasFile('url_photo')) {
             $image = $request->file('url_photo');
@@ -45,7 +45,7 @@ class AuthController extends Controller
             'password' => Hash::make($field['password']),
             'username' => $field['username'],
             'phone' => $field['phone'] ?? null,
-            'url_photo' => $urlPhoto,
+            'url_photo' => $urlPhoto ?? null,
 
         ]);
         //   $token = $user->createToken($request->name);
@@ -149,5 +149,52 @@ class AuthController extends Controller
             ->whereRaw('BINARY nickname = ?', [$request->nickname])
             ->exists();
         return response()->json(['exists' => $exists]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+
+
+        $user = $request->user();
+
+        $data = $request->validate([
+            'name' => 'max:255',
+            'username' => 'max:255',
+            'phone' => 'string|nullable',
+            'url_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+            'email' => 'email'
+        ]);
+
+        if ($request->hasFile('url_photo')) {
+            $image = $request->file('url_photo');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            // Eliminar la imagen anterior si existe
+            if ($user->url_photo && File::exists(public_path($user->url_photo))) {
+                File::delete(public_path($user->url_photo));
+            }
+            // Crear la carpeta de trips images 
+            $directory = public_path('uploads/users');
+            if (!File::exists($directory)) {
+                File::makeDirectory($directory, 0775, true);
+            }
+
+            // Guandar en la carpeta
+            $image->move($directory, $filename);
+            $data['url_photo'] = '/uploads/users/' . $filename;
+        }
+
+        // Actualizar el usuario
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'Perfil actualizado con éxito',
+            'data' => [
+
+                "name" => $user->name,
+                "email" => $user->email,
+                'url_photo' => url($user->url_photo) ?? null,
+                'token' => $request->bearerToken(),
+            ]
+        ]);
     }
 }

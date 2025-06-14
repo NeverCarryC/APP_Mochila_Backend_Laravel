@@ -16,7 +16,7 @@ class Item extends Model
         'description',
         'user_id',
         'quantity',
-        'isChecked',
+        'is_checked',
     ];
 
     public static function boot()

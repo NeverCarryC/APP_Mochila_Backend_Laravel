@@ -39,6 +39,7 @@ Route::post('/send-register-code', [PasswordResetController::class, 'sendVertify
 Route::post('/verify-register-code', [PasswordResetController::class, 'verifyRegisterCode']);
 
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
+Route::post('/update-profile', [AuthController::class, 'updateProfile'])->middleware('auth:sanctum');
 
 // Backpacks api
 Route::get('/backpacks/by-user', [BackpackController::class, 'getBackpacksByUser']);
